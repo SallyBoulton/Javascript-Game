@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <title>Devil Bouncer</title>
+    <link rel="stylesheet" href="StyleSheet.css"/>
+</head>
+<body>
+    <canvas id="canvas"width="1800"height="950"></canvas>
+    <script src="Sprites/EvilSprite.js"></script>
+    <script src="Sprites/GoodSprite.js"></script>
+    <script src="Classes/vector.js"></script>
+    <script src="Classes/keyCode.js"></script>
+    <script src="Classes/Acceleration.js"></script>
+    <script src="Classes/collision.js"></script>
+   
+
+    <script>
+        //this function will always be executed when the page loads
+        window.onload=function()
+        {
+            //create a reference to the canvas
+            var canvas = document.getElementById('canvas'),
+                //access the 2D drawing API
+                context = canvas.getContext('2d')
+                //new instance of the Evil class
+            evil = new Evil();
+            good = new GoodSprite();
+            ////function to handle keyboard events
+            function KeyboardEventHandler(event) {
+                //if the up arrow is pressed
+                if (event.keyCode == keycode.UP) {
+                    console.log("Activate thrust");
+                    //activate thrusters
+                    acceleration.VThrust(.01);
+
+
+                }
+                if (event.keyCode == keycode.LEFT) {
+                    acceleration.HThrust(.01);
+                    //go left
+                    console.log("Go left");
+                }
+                if (event.keyCode == keycode.RIGHT) {
+                    acceleration.HThrust(-0.01);
+                    //go right
+                    console.log("Go Right");
+                }
+                if (event.keyCode == keycode.DOWN) {
+                    acceleration.Halt();
+                    //kill engines
+                    console.log("Stop Thrust");
+                }
+            }
+            //add a listener for the keydown event
+            window.addEventListener('keydown', KeyboardEventHandler, false);
+
+
+            acceleration = new Accelerate(.001);
+            collision=new Collision
+            //create a new instance of the vector class
+            vector = new Vector(25, 1);
+            //set the vectore for the GoodSprite
+            //good.setVector(vector)
+
+            
+           
+            
+
+
+            //position the sprite at 80,40 on the canvas
+            evil.X = 80;
+            evil.Y = 40;
+            
+
+            
+            //draw the first frame
+            (function drawFrame() {
+                
+                //clear the canvas for the new frame
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                //increase the y posn by the y velocity
+                evil.Y += evil.VY;
+                //increase the x posn by the x velocity
+                evil.X += evil.VX;
+                //if the sprite hits the canvas top/bottom edge
+                if (evil.Y - evil.Size < 0 | evil.Y + evil.Size > canvas.height) {
+                    //reverse the y velocity
+                    evil.VY = -evil.VY;
+                }
+                //if the sprite hits the canvast left/right
+                if(evil.X-evil.Size<0|evil.X+evil.Size>canvas.width){
+                    //reverse the velocity
+                    evil.VX=-evil.VX;
+                }
+                //draw the Evil sprite
+                evil.draw(context);
+                
+                
+                
+                
+                
+                
+                //get the next animation frame
+                window.requestAnimationFrame(drawFrame, canvas);
+                good.move();
+                good.accelerate(acceleration);
+                //increase the y posn by the y velocity
+                good.Y += good.VY;
+                //increase the x posn by the x velocity
+                good.X += good.VX;
+                //if the sprite hits the canvas top/bottom edge
+                if (good.Y - good.Size < 0 | good.Y + good.Size > canvas.height) {
+                    //reverse the y velocity
+                    good.VY = -good.VY;
+                }
+                //if the sprite hits the canvast left/right
+                if (good.X - good.Size < 0 | good.X + good.Size > canvas.width) {
+                    //reverse the velocity
+                    good.VX = -good.VX;
+                }
+                good.draw(context);
+                if (collision.Overlapping(evil, good)) {
+                    //alert a collision has taken place
+                    alert("collision")
+                }
+                
+                
+
+            })();
+        }
+
+    </script>
+</body>
+</html>
